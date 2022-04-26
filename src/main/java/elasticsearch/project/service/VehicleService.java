@@ -60,7 +60,7 @@ public class VehicleService {
 					RequestOptions.DEFAULT
 			);
 			
-			if(documentFields == null) {
+			if(documentFields == null || documentFields.isSourceEmpty()) {
 				return null;
 			}
 			
