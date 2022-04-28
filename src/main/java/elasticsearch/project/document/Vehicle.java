@@ -2,6 +2,8 @@ package elasticsearch.project.document;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class Vehicle {
 	
 	private String id;
@@ -10,6 +12,7 @@ public class Vehicle {
 	
 	private String name;
 	
+	@JsonFormat(pattern = "yyy-MM-dd")
 	private Date created;
 
 	public String getId() {

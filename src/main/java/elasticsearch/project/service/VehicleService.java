@@ -2,6 +2,7 @@ package elasticsearch.project.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.elasticsearch.action.get.GetRequest;
@@ -45,6 +46,17 @@ public class VehicleService {
 		
 		final SearchRequest request = SearchUtil.buildSearchRequest(Indices.VEHICLE_INDEX, dto);
 		
+		return internalSearch(request);
+	}
+	
+	public List<Vehicle> searchByDate(final Date date) {
+		
+		final SearchRequest request = SearchUtil.buildSearchRequest(Indices.VEHICLE_INDEX, "created", date);
+		
+		return internalSearch(request);
+	}
+
+	private List<Vehicle> internalSearch(final SearchRequest request) {
 		if(request == null) {
 			LOG.error("Failed to build search request");
 			
