@@ -43,9 +43,17 @@ public class VehicleController {
 	}
 	
 	@GetMapping("/search/{date}")
-	public List<Vehicle> getAllByDate(@PathVariable 
+	public List<Vehicle> searchByDate(@PathVariable 
 			                          @DateTimeFormat(pattern = "yyyy-MM-dd")
 			                          final Date date) {
 		return service.searchByDate(date);
+	}
+	
+	@PostMapping("/search_by_date/{date}")
+	public List<Vehicle> searchByDate(@RequestBody final SearchRequestDTO dto,
+			                          @PathVariable
+			                          @DateTimeFormat(pattern = "yyyy-MM-dd")
+	                                  final Date date) {
+		return service.searchByDate(dto, date);
 	}
 }

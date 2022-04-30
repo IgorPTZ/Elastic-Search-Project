@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -73,6 +74,10 @@ public final class SearchUtil {
 				.orElse(null);
 	}
 	
+	public static QueryBuilder getQueryBuilder(final String field, final Date date) {
+		return QueryBuilders.rangeQuery(field).gte(date);
+	}
+	
 	public static SearchRequest buildSearchRequest(final String indexName,
 			                                       final String field,
 			                                       final Date date) {
@@ -92,7 +97,37 @@ public final class SearchUtil {
 		}
 	}
 	
-	private static QueryBuilder getQueryBuilder(final String field, final Date date) {
-		return QueryBuilders.rangeQuery(field).gte(date);
+	public static SearchRequest buildSearchRequest(final String indexName,
+			                                       final SearchRequestDTO dto,
+			                                       final Date date) {
+		try {
+			final QueryBuilder searchQuery = getQueryBuilder(dto);
+			
+			final QueryBuilder dateQuery = getQueryBuilder("created", date);
+			
+			final BoolQueryBuilder boolQuery = QueryBuilders.boolQuery()
+					                           .must(searchQuery)
+					                           .must(dateQuery);
+			
+			SearchSourceBuilder builder = new SearchSourceBuilder().postFilter(boolQuery);
+			
+			if(dto.getSortBy() != null) {
+				builder = builder.sort(
+							dto.getSortBy(),
+							dto.getOrder() != null ? dto.getOrder() : SortOrder.ASC
+						  );
+			}
+			
+			final SearchRequest request = new SearchRequest(indexName);
+			
+			request.source(builder);
+			
+			return request;
+		}
+		catch(final Exception e) {
+			e.printStackTrace();
+			
+			return null;
+		}
 	}
 }

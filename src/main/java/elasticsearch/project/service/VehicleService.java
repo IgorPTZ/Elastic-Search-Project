@@ -55,6 +55,12 @@ public class VehicleService {
 		
 		return internalSearch(request);
 	}
+	
+	public List<Vehicle> searchByDate(final SearchRequestDTO dto, final Date date) {
+		final SearchRequest request = SearchUtil.buildSearchRequest(Indices.VEHICLE_INDEX, dto, date);
+		
+		return internalSearch(request);
+	}
 
 	private List<Vehicle> internalSearch(final SearchRequest request) {
 		if(request == null) {
